@@ -23,8 +23,8 @@ void setup() {
   size(560,560);
    background(#937740);
   frameRate(60);
-// gif = new Gif(this, "StrangerBlinks_INICIO.gif");
-//  gif.loop();
+ gif = new Gif(this, "StrangerBlinks_INICIO.gif");
+  gif.loop();
    
    cp5 = new ControlP5(this);
 
@@ -42,18 +42,18 @@ int q=0;
 int p =0;
 void draw() {
   //parte de inicio
- /* if(progreso<540){
+  if(progreso<540){
    progreso=progreso+2;
    image(gif, 0,0);
     barraCarga();
- }else{*/
+ }else{
   //PANTALLLA PRINCIPAL
  
   background(fondo);
   Botones();
   
    
-// }
+ }
     
 //  fill(244,0,0);
  // rect(430,57,90,120);
@@ -62,9 +62,16 @@ void draw() {
   
   // 
 }
-GButton b_setear,b_procesar,b_simular,b_ejecutar;
+GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
 GButton[] btnColours = new GButton[7];
-GCheckbox chb_individual, chb_todo;
+GToggleGroup configuracion;
+GOption[]    conf;
+GCustomSlider velocidad;
+int opcionConf=0;
+PGraphics pg;
+GSketchPad spad;
+GLabel label;
+
 void Botones(){
   if(principal==true){
      blink =  cp5.addButton("Modo_blinks")
@@ -93,23 +100,109 @@ void Botones(){
         b_ejecutar = new GButton(this,300,430,170,100,"EJECUTAR");
        b_ejecutar.tag = "b_ejecutar";
        b_ejecutar.setLocalColorScheme(1);
-       
+       int p=35;
        for (int i = 0; i < btnColours.length; i++) {
-    btnColours[i] = new GButton(this, 50, 250+ i * 20, 40, 18, "" + (i+1));
+    btnColours[i] = new GButton(this, 68+p, 270+ i * 20, 40, 18, "" + (i+1));
     btnColours[i].tag = "Button: " + (i+1);
     btnColours[i].setLocalColorScheme(i);
     btnColours[i].tagNo = 1000+i;
   }  
-    chb_individual = new GCheckbox(this, 100, 250, 50, 20 );
-    chb_individual.setOpaque(false);
-     
-    chb_todo = new GCheckbox(this, 100, 280, 50, 20 );
-    chb_todo.setOpaque(false);
-       
-        principal=false;
- } 
- 
+    
+    configuracion = new GToggleGroup();
+    conf = new GOption[2];
+    
+    conf[0] = new GOption(this, 50+p, 230, 75, 20 );
+    conf[0].setText("Individual");
+    conf[0].tagNo = 9000;
+    conf[0].setOpaque(true);
+    conf[0].setAlpha(225);
+    configuracion.addControl(conf[0]);
+    
+    conf[1] = new GOption( this, 50+p, 247,75, 20);
+    conf[1].setText("Total");
+    conf[1].tagNo = 9001;
+    conf[1].setOpaque(true);
+     conf[1].setAlpha(225);
+    configuracion.addControl(conf[1]);
+   
+   String[] velo = new String[] {
+    "250", "500", "750", "1000", "1250"
+  };
   
+   label = new GLabel(this, 5, 205, 80, 20,"VELOCIDAD");
+   
+   velocidad = new GCustomSlider(this, 5,415, 190, 70, "green_red20px");
+   velocidad.setShowDecor(false, true, false, false);
+   velocidad.setRotation(-PI/2);
+   velocidad.setTickLabels(velo);
+    
+    //crea las letras para configurar el collor
+    //G4P_Sketchpad
+   pg = createGraphics(200, 160, JAVA2D);    
+   spad = new GSketchPad(this, 190, 230, 150, 150);
+      spad.setGraphic(pg);
+      clearGraphic();
+      updateGraphic();
+      
+      b_anterior = new GButton(this,200,385,50,30,"<<");
+      b_anterior.tag = "b_anterior";
+      b_anterior.setLocalColorScheme(5);
+      b_siguiente = new GButton(this,282,385,50,30,">>");
+      b_siguiente.tag = "b_siguiente";
+      b_siguiente.setLocalColorScheme(5);
+      
+     principal=false;
+     
+  }
+ } 
+ public void handleButtonEvents(GButton button, GEvent event) {
+   if(button==b_simular &&event == GEvent.CLICKED)Simulacion();
+                             
+   
+  
+ }
+ 
+ GWindow simulacion;
+ public void Simulacion(){
+     simulacion =   GWindow.getWindow(this, "StrangerBlinks: Simulación", 120, 120, 300, 300, JAVA2D);
+      simulacion.addDrawHandler(this, "simulacionDraw");
+ }
+ public void simulacionDraw(PApplet appc, GWinData data) {
+ 
+         appc.background(167,2,2);
+  
+  
+}  
+ void updateGraphic() {
+ 
+  pg.beginDraw();
+  for(int i=0;i<7;i++){
+    for(int j=0;j<5;j++){
+        pg.fill(125);
+        pg.rect(9+40*j,6+22*i,20,15);
+    }
+    
+  }
+    pg.endDraw();
+}
+ 
+ 
+ 
+ void clearGraphic() {
+  pg.beginDraw();
+  pg.background(255, 255, 200);
+  pg.noFill();
+  pg.ellipseMode(CORNERS);
+  pg.endDraw();
+}
+ 
+  public void handleToggleControlEvents(GToggleControl checkbox, GEvent event) {
+      //0=individua, 1=total
+      opcionConf = checkbox.tagNo % 9000;
+      //ejemplo en G4P_Dialogs
+      
+    
+      
   
 }
 boolean blinks=true;
@@ -152,8 +245,8 @@ void Modo_signs(){
 
 
 void mousePressed(){
-  println(mouseX);
+  /*println(mouseX);
   println(mouseY);
   q=mouseY;
-  p=mouseX;
+  p=mouseX;*/
 }
