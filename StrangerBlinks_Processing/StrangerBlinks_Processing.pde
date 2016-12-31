@@ -42,18 +42,18 @@ int q=0;
 int p =0;
 void draw() {
   //parte de inicio
-  if(progreso<540){
+  /*if(progreso<540){
    progreso=progreso+2;
    image(gif, 0,0);
     barraCarga();
- }else{
+ }else{*/
   //PANTALLLA PRINCIPAL
  
   background(fondo);
   Botones();
   
    
- }
+ //}
     
 //  fill(244,0,0);
  // rect(430,57,90,120);
@@ -89,7 +89,7 @@ void Botones(){
        b_setear = new GButton(this,160,187,50,30,"Setear");
        b_setear.tag = "b_setear";
        b_setear.setLocalColorScheme(0);
-       b_procesar = new GButton(this,220,183,80,40,"Pocesar");
+       b_procesar = new GButton(this,220,183,80,40,"Procesar");
        b_procesar.tag = "b_procesar";
        b_procesar.setLocalColorScheme(6);
        
@@ -115,6 +115,7 @@ void Botones(){
     conf[0].setText("Individual");
     conf[0].tagNo = 9000;
     conf[0].setOpaque(true);
+    
     conf[0].setAlpha(225);
     configuracion.addControl(conf[0]);
     
@@ -190,11 +191,12 @@ void Botones(){
  
  void clearGraphic() {
   pg.beginDraw();
-  pg.background(255, 255, 200);
+  pg.background(167,2,2,180);
   pg.noFill();
   pg.ellipseMode(CORNERS);
   pg.endDraw();
 }
+
  
   public void handleToggleControlEvents(GToggleControl checkbox, GEvent event) {
       //0=individua, 1=total
@@ -235,11 +237,13 @@ void Modo_signs(){
     if(progreso==540)clear();
     
     }
-  public void handleTextEvents(GEditableTextControl texto1, GEvent event) {
-      
-      println(texto.getTextLength(0,false));
+    String tes;
+public void handleTextEvents(GEditableTextControl textControl, GEvent event) { 
+  //displayEvent(textControl.tag, event);
+  tes = texto.getText();
+   if(tes.length()>6) { texto.setText(tes);  }
+    println(tes);
 }
-  
   
 
 
