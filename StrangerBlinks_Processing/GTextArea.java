@@ -196,8 +196,14 @@ public class GTextArea extends GEditableTextControl {
 	 */
 	public void setText(String text){
 		// Set the wrap width the same as the control
-		setTextImpl(text, wrapWidth);
-                moveCaretEndOfText(endTLHI);
+		  setTextImpl(text, wrapWidth);
+      
+    LinkedList<TextLayoutInfo> lines = stext.getLines(buffer.g2);
+    endTLHI.tli = lines.getLast();
+    endTLHI.thi = endTLHI.tli.layout.getNextRightHit(endTLHI.tli.nbrChars - 1);
+    startTLHI.copyFrom(endTLHI);
+    calculateCaretPos(endTLHI);
+    
                 
 	}
 
@@ -208,7 +214,7 @@ public class GTextArea extends GEditableTextControl {
 	public void setText(String[] lines){
 		if(lines != null && lines.length > 0)
 			setTextImpl(PApplet.join(lines, "\n"), wrapWidth);
-                         
+                      
 	}
 
 
@@ -220,6 +226,7 @@ public class GTextArea extends GEditableTextControl {
 	public void setText(String[] lines, int wrapWidth){
 		if(lines != null && lines.length > 0)
 			setTextImpl(PApplet.join(lines, "\n"), wrapWidth);
+
 	}
 
 	/**
@@ -229,6 +236,7 @@ public class GTextArea extends GEditableTextControl {
 	 */
 	public String[] getTextAsArray(){
 		return stext.getPlainTextAsArray();
+
 	}
 
 	/**
@@ -794,10 +802,15 @@ public class GTextArea extends GEditableTextControl {
 		newline = false;
 		backspace = false;
 		if(isDisplayable(ascii)){
-			if(hasSelection())
-				stext.deleteCharacters(pos, nbr);
-			stext.insertCharacters("" + keyChar, pos);
+			if(hasSelection())stext.deleteCharacters(pos, nbr);
+   
+   //LINEA MODIFICADA PARA ACEPTAR SOLO LETRAS Y NÚMEROS, TAMBIEN PARA PERMITIR MÁXIMO 140 CARACTERES
+      if((Character.isLetter(keyChar)||Character.isDigit(keyChar)||keyChar==' ')&&stext.length()<=140){
+			stext.insertCharacters("" + Character.toUpperCase(keyChar), pos);
 			adjust = 1; textChanged = true;
+      
+      }
+        
 		}
 		else if(keyChar == BACKSPACE){
 			if(hasSelection()){
@@ -818,11 +831,11 @@ public class GTextArea extends GEditableTextControl {
 			}
 		}
 		else if(keyChar == ENTER || keyChar == RETURN) {
-			fireEvent(this, GEvent.ENTERED); // Ticket 11
+		/*	fireEvent(this, GEvent.ENTERED); // Ticket 11
 			if(stext.insertEOL(pos)){
 				adjust = 1; textChanged = true;
 				newline = true;
-			}
+			}*/
 		}
 		else if(keyChar == TAB){
 			// If possible move to next text control
