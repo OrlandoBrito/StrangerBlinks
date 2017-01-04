@@ -261,6 +261,10 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
                
            }
          } 
+         if(button==s_pausa &&event == GEvent.CLICKED)ensimu=!ensimu;
+          if(button==s_inicio &&event == GEvent.CLICKED)e=0;
+           
+         
  }
  
  ///llenar la matriz con el color por defecto y crearla
@@ -290,40 +294,52 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
  ////////////////////////////////////////////////////////////
  
  
- 
+ GButton s_pausa,s_inicio;
  GWindow simulacion;
  public void Simulacion(){
     e=0;
     tiempo_act=-250;//para que inicie más rapido
     espera = Velocidad();
-     simulacion =   GWindow.getWindow(this, "StrangerBlinks: Simulación", 120, 120, 560,373, JAVA2D);
+    ensimu=true;
+     simulacion =   GWindow.getWindow(simulacion, "StrangerBlinks: Simulación", 120, 120, 560,373, JAVA2D);
       simulacion.addDrawHandler(this, "simulacionDraw");
       fondo_simulacion=loadImage("simulacion_fondo.jpg");
       println("");
        pg_simu = createGraphics(200, 160, JAVA2D);    
        spad_simu = new GSketchPad(simulacion, 300, 10, 250, 300);
        spad_simu.setGraphic(pg_simu);
+
+       s_pausa = new GButton(simulacion, 445,315,100,50,"PAUSAR");
+       s_pausa.tag = "b_anterior";
+       s_pausa.setLocalColorScheme(6);
+      
+       s_inicio = new GButton(simulacion,305,315,100,50,"RESET");
+       s_inicio.tag = "b_anterior";
+       s_inicio.setLocalColorScheme(6);
+       
        simulacion.setActionOnClose(GWindow.CLOSE_WINDOW);
+       
+       
  }
 
-int tiempo;
-int tiempo_act;
-int espera;
+long tiempo, tiempo_act, espera;
 int e=0;
+boolean ensimu=true;
  public void simulacionDraw(PApplet appc, GWinData data) {
  
  
      appc.background(fondo_simulacion);
      tiempo =simulacion.millis();
      
-     if(tiempo>tiempo_act+espera && e<mensaje.length){
+     if(tiempo>tiempo_act+espera && e<mensaje.length&&ensimu==true){
        borrar_simu();
        
        letra_simu(mensaje[e],charCol[e]);
         e++;
        tiempo_act=tiempo;
-       println("hola" + e);
+      
      }
+  //  println(s_pausa.getClass());
      
      
         
@@ -336,9 +352,10 @@ public void letra_simu(char c,color co){
   for(int i=0;i<7;i++){
     for(int j=0;j<5;j++){
       int [][] cc = Letras(c);
+      
       if(cc[i][j]==1) pg_simu.fill(co); 
        else pg_simu.fill(190,190,190,100);
-     
+    
         pg_simu.rect(20+35*j,6+22*i,20,18);
     
     }
