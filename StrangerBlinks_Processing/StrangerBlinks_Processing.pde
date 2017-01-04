@@ -201,7 +201,7 @@ int colores = 3;
 GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
 
  public void handleButtonEvents(GButton button, GEvent event) {
-   if(button==b_simular &&event == GEvent.CLICKED)Simulacion();
+   if(button==b_simular &&event == GEvent.CLICKED && mensaje!=null)Simulacion();
     if(button==b_setear &&event == GEvent.CLICKED) {texto.setText("");d=0; mensaje=null; charCol=null;clearGraphic();}
     
     //convierte en char el texto puesto en texto
@@ -272,32 +272,90 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
       }
    
  }
+ 
+ public int Velocidad()
+ {
+   int r=500;
+   switch(velocidad.getValueI()){
+     case 0: r= 250; break;
+     case 1: r= 500; break;
+     case 2: r= 750; break;
+     case 3: r= 1000; break;
+     case 4: r= 1250; break;
+   }
+   return r;
+ }
+ /////////////////////////////////////////////////////////////
+ //////////////////////SIMULACION
+ ////////////////////////////////////////////////////////////
+ 
+ 
+ 
  GWindow simulacion;
  public void Simulacion(){
+    e=0;
+    tiempo_act=-250;//para que inicie más rapido
+    espera = Velocidad();
      simulacion =   GWindow.getWindow(this, "StrangerBlinks: Simulación", 120, 120, 560,373, JAVA2D);
       simulacion.addDrawHandler(this, "simulacionDraw");
       fondo_simulacion=loadImage("simulacion_fondo.jpg");
       println("");
        pg_simu = createGraphics(200, 160, JAVA2D);    
-     spad_simu = new GSketchPad(simulacion, 300, 10, 250, 300);
-     spad_simu.setGraphic(pg_simu);
+       spad_simu = new GSketchPad(simulacion, 300, 10, 250, 300);
+       spad_simu.setGraphic(pg_simu);
+       simulacion.setActionOnClose(GWindow.CLOSE_WINDOW);
  }
 
+int tiempo;
+int tiempo_act;
+int espera;
+int e=0;
  public void simulacionDraw(PApplet appc, GWinData data) {
  
-  
  
      appc.background(fondo_simulacion);
+     tiempo =simulacion.millis();
+     
+     if(tiempo>tiempo_act+espera && e<mensaje.length){
+       borrar_simu();
+       
+       letra_simu(mensaje[e],charCol[e]);
+        e++;
+       tiempo_act=tiempo;
+       println("hola" + e);
+     }
+     
+     
         
-     pg_simu.beginDraw();
-     pg_simu.background(0,0,2,150);
+    
+}  
+
+public void letra_simu(char c,color co){
+  pg_simu.beginDraw();
+
+  for(int i=0;i<7;i++){
+    for(int j=0;j<5;j++){
+      int [][] cc = Letras(c);
+      if(cc[i][j]==1) pg_simu.fill(co); 
+       else pg_simu.fill(190,190,190,100);
+     
+        pg_simu.rect(20+35*j,6+22*i,20,18);
+    
+    }
+  }
+    pg_simu.endDraw();
+  
+}
+ public void borrar_simu(){
+   
+    pg_simu.beginDraw();
+     pg_simu.background(67,37,5,150);
      pg_simu.noFill();
     pg_simu.ellipseMode(CORNERS);
     pg_simu.endDraw();
-        
-        // appc.noLoop();
-  //    if(data.isDisposse()==true) t++;
-}  
+   
+ }
+ 
 
  
   
