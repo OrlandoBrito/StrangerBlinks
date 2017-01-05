@@ -1,6 +1,77 @@
 
-//regresa la la letra
+int blink;
+public int Letra_blinks(char c){
+  switch(c){
+    case 'A': blink = 1;
+            break;
+    case 'B':  blink = 2;
+            break;
+    case 'C':  blink = 3;
+            break;
+    case 'D':  blink = 5;
+            break;
+    case 'E':  blink = 6;
+            break;
+    case 'F':  blink = 7;
+            break;
+    case 'G':  blink = 8;
+            break;
+    case 'H':  blink = 9;
+            break;
+    case 'I':  blink = 10;
+            break;
+    case 'J':  blink = 11;
+            break;
+    case 'K':  blink = 12;
+            break;
+    case 'L':  blink = 13;
+            break;
+    case 'M':  blink = 14;
+            break;
+    case 'N':  blink = 16;
+            break;
+    case 'Ñ':  blink = 17;
+            break;
+    case 'O':  blink = 18;
+            break;
+    case 'P':  blink = 20;
+            break;
+    case 'Q':  blink = 21;
+            break;
+    case 'R':  blink = 22;
+            break;
+    case 'S':  blink = 23;
+            break;
+    case 'T':  blink = 24;
+            break;
+    case 'U':  blink = 25;
+            break;
+    case 'V':  blink = 26;
+            break;
+    case 'W':  blink = 27;
+            break;
+    case 'X':  blink = 28;
+            break;
+    case 'Y':  blink = 29;
+            break;
+    case 'Z':  blink = 32;
+            break;
+            
+    
+  }
+  return blink;
+  
+}
+
+
+
+
+
+
+
+//regresa la la letra MODO BLINKS
  int [][] cc;
+ 
 public int[][] Letras(char c){
  
  switch(c){ 
@@ -51,7 +122,7 @@ case 'E':
               {1,1,1,1,1}};
               break;
 case 'F':
- cc =new int[][]{ {0,1,1,1,1},
+ cc =new int[][]{ {1,1,1,1,1},
               {1,0,0,0,0},
               {1,0,0,0,0},
               {1,1,1,1,0},

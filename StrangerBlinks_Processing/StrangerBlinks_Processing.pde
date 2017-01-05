@@ -16,16 +16,19 @@ ControlP5 cp5;
 
 Canvas inicio;
 PImage fondo,fondo_simulacion;
-boolean principal =true;
+boolean principal = true; 
 
-Button blink;
-Button sign;
+
 PFont fd;
 GTextArea texto;
 
+boolean Modos=true; ///////////////////true = modo blinks; false modo_signs
+boolean cambios;
+
 void setup() {
   size(560,560);
-     
+  
+     cambios= Modos;
    background(#937740);
   frameRate(60);
  gif = new Gif(this, "StrangerBlinks_INICIO.gif");
@@ -56,6 +59,12 @@ void draw() {
 
   background(fondo);
   Botones();
+  if(cambios!=Modos&& mensaje!=null){
+      clearGraphic();
+      updateGraphic(mensaje[d],charCol[d]);
+      cambios=Modos;
+  }
+  
  
  //}
  //  println("mmm "+ A[2]);
@@ -85,15 +94,13 @@ color[] col= new color[8];
 
 
 void Botones(){
+  
   if(principal==true){
-     blink =  cp5.addButton("Modo_blinks")
-       .setPosition(430,57)
-       .setSize(90,120).setColorBackground(ControlP5.RED);
+ 
+      cp5.addToggle("Modos")
+      .setPosition(410,57)
+      .setSize(120,120).setColorActive(ControlP5.RED).setColorBackground(ControlP5.GRAY).setLabelVisible(false) ;
       
-       sign =  cp5.addButton("Modo_signs")
-       .setPosition(430,210)
-       .setSize(90,120).setColorBackground(ControlP5.GRAY);
-     
      
      //Para modificar la entrada de datos, ir a la linea 808 de GTextArea y modificar el if
        texto = new GTextArea(this, 60, 57, 345, 120, G4P.SCROLLBARS_VERTICAL_ONLY | G4P.SCROLLBARS_AUTOHIDE); 
@@ -137,7 +144,7 @@ void Botones(){
   }  
     
     configuracion = new GToggleGroup();
-   
+    
     general = new GOption(this, 85, 242,75, 20, "General");
     general.setOpaque(true);
     
@@ -180,6 +187,8 @@ void Botones(){
      principal=false;
      
   }
+  
+ 
   // println( velocidad.getValueI()); //obtiene el valor de velocidad de 0 - 4 = 250,500,750,1000,1250
    if(mensaje!=null){  
    if(d==0)  b_anterior.setLocalColorScheme(0); else b_anterior.setLocalColorScheme(5);
@@ -188,7 +197,7 @@ void Botones(){
    
    //señal de colores 
    fill(222,222,222);
-   rect(99, 263+ colores * 20, 46, 20);
+   rect(99, 263 + colores * 20, 46, 20);
    
 } 
 
@@ -198,6 +207,7 @@ int d = 0; //posicion del mensaje
 color[]  charCol;
 ///////
 int colores = 3;
+
 GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
 
  public void handleButtonEvents(GButton button, GEvent event) {
@@ -214,10 +224,10 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
               clearGraphic();
               updateGraphic(mensaje[d],charCol[d]);
               general.setSelected(true);
-              
+             
              // println("tamano"+texto.getText()+"dfd");
     }
-    
+     
     
     
      //RECORRER LA MATRIZ DE LETRA
@@ -297,7 +307,9 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
  GButton s_pausa,s_inicio;
  GWindow simulacion;
  public void Simulacion(){
+   modo = Modos;
     e=0;
+    //simulacion.noSmooth();
     tiempo_act=-250;//para que inicie más rapido
     espera = Velocidad();
     ensimu=true;
@@ -324,9 +336,10 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
 
 long tiempo, tiempo_act, espera;
 int e=0;
-boolean ensimu=true;
+boolean ensimu=true, modo;
+
  public void simulacionDraw(PApplet appc, GWinData data) {
- 
+     
  
      appc.background(fondo_simulacion);
      tiempo =simulacion.millis();
@@ -348,7 +361,7 @@ boolean ensimu=true;
 
 public void letra_simu(char c,color co){
   pg_simu.beginDraw();
-
+  if (modo==false){
   for(int i=0;i<7;i++){
     for(int j=0;j<5;j++){
       int [][] cc = Letras(c);
@@ -359,14 +372,53 @@ public void letra_simu(char c,color co){
         pg_simu.rect(20+35*j,6+22*i,20,18);
     
     }
-  }
-    pg_simu.endDraw();
+  }}else{
+    char[] chk = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','ñ','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+     int jk=0;
+    for(int i=0;i<7;i++){
+    for(int j=0;j<5;j++){
+      int   cc = Letra_blinks(c);
+       int v=i*5+j;
+      if(cc==v&&c!=' '){ 
+         pg_simu.fill(co); 
+      //pg.rect(20+35*j,6+22*i,20,18);
+      //  pg.fill(0);
+        //PFont po =loadFont("Arial-Black-18");
+       pg_simu.textFont(createFont("Georgia", 30) );
+      pg_simu.text(""+c,20+35*j,25+22*i);
+       jk++;
+       
+        
+       
+      
+      } else {
+       
+        if(v!=0&&v!=4&&v!=15&&v!=19&&v!=30&&v!=31&&v!=33&&v!=34){
+          
+         if(c==' ')pg_simu.fill(co);else pg_simu.fill(0);
+         pg_simu.textFont(createFont("Georgia", 28) );
+         pg_simu.noStroke();
+         
+         pg_simu.text(chk[jk],20+35*j,25+22*i);
+         jk++;
+         }
+        
+       }
+       
+      
+      
+    }
+    
+   }
+    
   
+}
+   pg_simu.endDraw();
 }
  public void borrar_simu(){
    
     pg_simu.beginDraw();
-     pg_simu.background(67,37,5,150);
+     pg_simu.background(225,170,80,150);
      pg_simu.noFill();
     pg_simu.ellipseMode(CORNERS);
     pg_simu.endDraw();
@@ -379,7 +431,8 @@ public void letra_simu(char c,color co){
  void updateGraphic(char c,color co) {
 
   pg.beginDraw();
-
+ 
+  if(Modos==false){
   for(int i=0;i<7;i++){
     for(int j=0;j<5;j++){
       int [][] cc = Letras(c);
@@ -389,7 +442,46 @@ public void letra_simu(char c,color co){
         pg.rect(20+35*j,6+22*i,20,18);
     
     }
-  }
+   }
+  }else{
+    char[] chk = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','ñ','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+     int jk=0;
+    for(int i=0;i<7;i++){
+    for(int j=0;j<5;j++){
+      int   cc = Letra_blinks(c);
+       int v=i*5+j;
+      if(cc==v&&c!=' '){ 
+         pg.fill(co); 
+      //pg.rect(20+35*j,6+22*i,20,18);
+      //  pg.fill(0);
+        //PFont po =loadFont("Arial-Black-18");
+       pg.textFont(createFont("Georgia", 30) );
+       pg.text(""+c,20+35*j,25+22*i);
+       jk++;
+       
+        
+       
+      
+      }
+       else {
+       
+        if(v!=0&&v!=4&&v!=15&&v!=19&&v!=30&&v!=31&&v!=33&&v!=34){
+          
+         if(c==' ')pg.fill(co);else pg.fill(0);
+         pg.textFont(createFont("Georgia", 28) );
+         pg.text(chk[jk],20+35*j,25+22*i);
+         jk++;
+       }
+        
+       }
+       
+      
+      
+    }
+    
+   }
+     
+  } 
     pg.endDraw();
 }
  
@@ -397,7 +489,7 @@ public void letra_simu(char c,color co){
  
  void clearGraphic() {
   pg.beginDraw();
-  pg.background(167,2,2,100);
+  pg.background(255,0);
   pg.noFill();
   pg.ellipseMode(CORNERS);
   pg.endDraw();
@@ -413,27 +505,11 @@ public void letra_simu(char c,color co){
       
   
 }
-boolean blinks=true;
-void Modo_blinks(){
- if(blinks==false){
-   blinks=true;
-   blink.setColorBackground(ControlP5.RED); //activado
-   signs=false;
-   sign.setColorBackground(ControlP5.GRAY);   //desactivado signs
- }
+
  
   
-}
-boolean signs=false;
-void Modo_signs(){
-  if(signs==false){
-     signs=true;
-    sign.setColorBackground(ControlP5.RED);  //activado
-    blinks=false;
-    blink.setColorBackground(ControlP5.GRAY);   //desactivado blink
-  }
-  
-}
+
+
 
     void barraCarga() { 
       
@@ -449,7 +525,7 @@ void Modo_signs(){
 
 
 void mousePressed(){
-  println("click");
+  
   /*println(mouseX);
   println(mouseY);
   q=mouseY;

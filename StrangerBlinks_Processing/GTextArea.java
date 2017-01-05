@@ -805,7 +805,8 @@ public class GTextArea extends GEditableTextControl {
 			if(hasSelection())stext.deleteCharacters(pos, nbr);
    
    //LINEA MODIFICADA PARA ACEPTAR SOLO LETRAS Y NÚMEROS, TAMBIEN PARA PERMITIR MÁXIMO 140 CARACTERES
-      if((Character.isLetter(keyChar)||Character.isDigit(keyChar)||keyChar==' ')&&stext.length()<=140){
+   //||Character.isDigit(keyChar)
+      if((Character.isLetter(keyChar)||keyChar==' ')&&stext.length()<=140){
 			stext.insertCharacters("" + Character.toUpperCase(keyChar), pos);
 			adjust = 1; textChanged = true;
       
