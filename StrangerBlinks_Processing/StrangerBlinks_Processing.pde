@@ -50,11 +50,11 @@ int q=0;
 int p =0;
 void draw() {
   //parte de inicio
-  /*if(progreso<540){
+  if(progreso<540){
    progreso=progreso+2;
    image(gif, 0,0);
     barraCarga();
- }else{*/
+ }else{
   //PANTALLLA PRINCIPAL
 
   background(fondo);
@@ -66,7 +66,7 @@ void draw() {
   }
   
  
- //}
+ }
  //  println("mmm "+ A[2]);
     
 //  fill(244,0,0);
