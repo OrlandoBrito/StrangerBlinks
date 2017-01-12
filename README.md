@@ -1,4 +1,4 @@
-![](CARATULA1.png)
+![](Caratula1.png)
 
 ***
 #INTRODUCCIÓN#
