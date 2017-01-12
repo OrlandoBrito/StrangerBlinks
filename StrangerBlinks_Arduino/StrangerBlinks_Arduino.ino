@@ -19,7 +19,8 @@ String mensaje;
 String color;
 int  longitud;
 int velocidad;
-boolean ACTIVADO=false;
+boolean ACTIVADO=false,PAUSA=false,SALIR=false,REINICIAR=false,CAMBIO=false;
+int contador;
 
 // When we setup the NeoPixel library, we tell it how many pixels, and which pin to use to send signals.
 // Note that for older NeoPixel strips you might need to change the third parameter--see the strandtest
@@ -90,30 +91,70 @@ int k =0;
  if(velocidad==4)digitalWrite(LED_BUILTIN, HIGH);
  // if(mensaje.equals("APAGAR"))digitalWrite(LED_BUILTIN, LOW);
   if(velocidad==2)digitalWrite(LED_BUILTIN, LOW);*/
- Serial.println(mensaje);
+
   if(ACTIVADO==true){
     ///proceso de mostrar las letras
     if(modo==1){//MODO BLINKS
+        for(int i=contador;i<longitud&&!PAUSA&&!REINICIAR&&!SALIR;i++){
+      
+      modo_blinks(mensaje[i],(int)((char)(color[i]-'0')));
+      pixels.show();
+      delay((velocidad+1)*250);
+      datos();
+      contador++;
+      }
+      if(contador==longitud||SALIR){ contador = 0; ACTIVADO = false;SALIR=false;}
+      if(REINICIAR){contador = 0; ACTIVADO = true;REINICIAR=false;}
+      if(PAUSA){ACTIVADO=false;}
+      
       
     }
     if(modo==2){//MODO SGINS
-      for(int i=0;i<longitud;i++){
+      for(int i=contador;i<longitud&&!PAUSA&&!REINICIAR&&!SALIR;i++){
       
       modo_signs(mensaje[i],(int)((char)(color[i]-'0')));
       pixels.show();
       delay((velocidad+1)*250);
-     
+      datos();
+      contador++;
       }
+      if(contador==longitud||SALIR){ contador = 0; ACTIVADO = false;SALIR=false;}
+      if(REINICIAR){contador = 0; ACTIVADO = true;REINICIAR=false;}
+      if(PAUSA){ACTIVADO=false;}
+      
     }
+    
 
-    
-  }else{
-    
+   
   }
-
+  if(!PAUSA) leds_off();
+    
+  
   
 }
 
+void leds_off(){
+   for(int i=0;i<37;i++){
+    pixels.setPixelColor(i, pixels.Color(0,0,0));
+    
+
+    
+   }
+   
+
+}
+char cb[37] = {'3','V','O','H','A','B','I','P','W','4','5','X','Q','J','C','D','K','R','Y','6','7','Z','S','L','E','F','M','T','0','8','9','1','U','N','G',(char)-47,'2'};
+void modo_blinks(char c, int co){
+
+  
+  for(int cv=0; cv<37;cv++){
+
+      if(c==cb[cv]||c==' ')pixels.setPixelColor(cv, colores[co]);else  pixels.setPixelColor(cv, pixels.Color(0,0,0));
+    
+  }
+   pixels.show();
+  
+}
 void modo_signs(char c, int co){
   boolean gh=true;
   Letras(c);
@@ -139,7 +180,8 @@ int modo;
 String mensaje;
 String color;
 int  longitud;
-int velocidad;*/
+int velocidad;
+boolean ACTIVADO=false,PAUSA=false,SALIR=false,REINICIAR=false,CAMBIO=false;*/
 void datos(){
 
 
@@ -147,11 +189,14 @@ if(Serial.available()>0)//Si el Arduino recibe datos a través del puerto serie
   { 
     
     hola = Serial.readString();
-      longitud =(hola.length()-2)/2;
+      
     //procesar para obtener el modo, el mensaje y los colores
- 
+     if(!(hola.equals("pausa")||hola.equals("salir")||hola.equals("reiniciar"))){
+      
+      longitud =(hola.length()-2)/2;
+      
       modo =(char) (hola[0]-'0'); //-0 para representar el valor de 0 al 9
-    
+      
       velocidad = (char) (hola[hola.length()-1]-'0');
      mensaje="";
      color="";
@@ -161,29 +206,23 @@ if(Serial.available()>0)//Si el Arduino recibe datos a través del puerto serie
         color+=hola[s+longitud+1];
      }
      
-      ACTIVADO=true;
-    
+      ACTIVADO=true; 
+      REINICIAR=true;
+      
+      
+     }else{//////////COMANDOS DE REPRODUCCIÓN
+        if(hola.equals("pausa")){PAUSA=!PAUSA;
+            if(PAUSA==false) ACTIVADO=true;
+        }
+        if(hola.equals("salir"))SALIR=true;
+        if(hola.equals("reiniciar")){REINICIAR=true;ACTIVADO=true;}
+
+
+     }
     }
    
 
-      
-      
-     
-     
-
-   /*
-    int inc[hola.length()];
-
-    for (int g=0;g<hola.length();g++){
-        inc[g]=Serial.read();
-
-        
-    }
-    */
-    
-   
-      //Serial.flush();
-  }
+}
   
 
 
