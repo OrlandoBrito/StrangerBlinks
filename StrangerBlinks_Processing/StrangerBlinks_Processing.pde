@@ -1,3 +1,5 @@
+import processing.serial.*;
+
 import g4p_controls.*;
 
 import gifAnimation.*;
@@ -8,6 +10,7 @@ import  java.awt.font.TextAttribute;
 import java.awt.Font;
 import java.awt.font.TextAttribute;
 import java.awt.Color;
+import java.util.Arrays;
 
 Gif gif;
 float progreso=0; //para la barra de carga del inicio
@@ -23,11 +26,18 @@ PFont fd;
 GTextArea texto;
 
 boolean Modos=true; ///////////////////true = modo blinks; false modo_signs
-boolean cambios;
-
+boolean cambios,conectado=true;
+Serial puerto;
 void setup() {
   size(560,560);
-  
+  int s=0;
+ //  for( s=0;s<Serial.list().length&&!Serial.list()[s].equals("COM4");s++);
+  // if(s==Serial.list().length)println("no puerto");else println("puerto+"+s);
+  println(Serial.list());
+  try{
+   puerto = new Serial(this,"COM4",9600); conectado=true;}
+   catch(Exception e){ println("puerto no detectado");conectado=false;
+   }
      cambios= Modos;
    background(#937740);
   frameRate(60);
@@ -50,23 +60,31 @@ int q=0;
 int p =0;
 void draw() {
   //parte de inicio
-  if(progreso<540){
+ /* if(progreso<540){
    progreso=progreso+2;
    image(gif, 0,0);
     barraCarga();
  }else{
   //PANTALLLA PRINCIPAL
-
+*/
   background(fondo);
   Botones();
   if(cambios!=Modos&& mensaje!=null){
       clearGraphic();
-      updateGraphic(mensaje[d],charCol[d]);
+      updateGraphic(mensaje[d],col[charCol[d]]);
       cambios=Modos;
   }
   
  
+ 
+ if(conectado==false){
+ try{
+   puerto = new Serial(this,"COM4",9600);println("conectado"); conectado=true;}
+   catch(Exception e){ conectado=false;
+   }
+   
  }
+
  //  println("mmm "+ A[2]);
     
 //  fill(244,0,0);
@@ -204,7 +222,7 @@ void Botones(){
 ////////
 char[]   mensaje;
 int d = 0; //posicion del mensaje
-color[]  charCol;
+int[]  charCol;
 ///////
 int colores = 3;
 
@@ -222,7 +240,7 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
               
               matriz_defecto(mensaje);
               clearGraphic();
-              updateGraphic(mensaje[d],charCol[d]);
+              updateGraphic(mensaje[d],col[charCol[d]]);
               general.setSelected(true);
              
              // println("tamano"+texto.getText()+"dfd");
@@ -236,7 +254,7 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
               
            d++;
            clearGraphic();
-           updateGraphic(mensaje[d],charCol[d]);
+           updateGraphic(mensaje[d],col[charCol[d]]);
           
          }
         
@@ -246,7 +264,7 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
            
               d--;
               clearGraphic();
-              updateGraphic(mensaje[d],charCol[d]);
+              updateGraphic(mensaje[d],col[charCol[d]]);
              
            
          }
@@ -261,18 +279,44 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
                {
                matriz_defecto(mensaje);
                clearGraphic();
-               updateGraphic(mensaje[d],charCol[d]);
+               updateGraphic(mensaje[d],col[charCol[d]]);
                }else
                {
-                  charCol[d]=col[colores];
+                  charCol[d]=colores;
                   clearGraphic();
-                  updateGraphic(mensaje[d],charCol[d]);
+                  updateGraphic(mensaje[d],col[charCol[d]]);
                }
                
            }
          } 
          if(button==s_pausa &&event == GEvent.CLICKED)ensimu=!ensimu;
           if(button==s_inicio &&event == GEvent.CLICKED)e=0;
+          
+          
+          /////////////////////////////////////////////////////////////
+          //////////////////////COMUNICACION CON ARDUINO
+          //////////////////////////////////////////////////////////////
+          
+          if(button== b_ejecutar &&event == GEvent.CLICKED&& mensaje!=null){
+            if(conectado){
+              String enviar;
+              if(Modos) enviar="1";else enviar = "2";
+               enviar +=new String(mensaje);
+               for(int l=0;l<charCol.length;l++){
+                 enviar += String.valueOf(charCol[l]);
+               }
+                enviar+=String.valueOf(velocidad.getValueI());
+               
+               
+               println(enviar);
+              //CADENA A ENVIAR   1) MODO = 1 o 2-----> 2)Mensaje 3)Colores(unidos los numeros como string 
+              
+             puerto.write(enviar);
+                //println("enviado "+ new String(mensaje));
+            }
+               else println("no conectado");
+            
+          }
            
          
  }
@@ -282,7 +326,7 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
  {
      charCol = new color[tex.length];
      for (int i=0;i< charCol.length;i++){
-        charCol[i] = col[colores];
+        charCol[i] = colores;
       }
    
  }
@@ -347,7 +391,7 @@ boolean ensimu=true, modo;
      if(tiempo>tiempo_act+espera && e<mensaje.length&&ensimu==true){
        borrar_simu();
        
-       letra_simu(mensaje[e],charCol[e]);
+       letra_simu(mensaje[e],col[charCol[e]]);
         e++;
        tiempo_act=tiempo;
       
