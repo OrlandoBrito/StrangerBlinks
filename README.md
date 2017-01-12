@@ -1,12 +1,13 @@
-# StrangerBlinks
-Mediante una GUI controlar unas luces led a través de arduino para dar mensajes de una forma original 
+![](CARATULA1.png)
 
-Integrantes:
-Brito Casanova Orlando,
-Joshua Zambrano Rosales,
-Huacón Salazar Linda,
+***
+#INTRODUCCIÓN#
 
-#INFORME # 1#
+Basado en una escena de la serie "Stranger Things" transmitida a través de Netflix, el presente proyecto muestra letras y  mensajes por medio de una tira de leds de 37 unidades, ubicada en forma de una matriz de 7x5, controlada por medio de una aplicacion de arduino utilizando el entorno de Proccesing y la programación de Java.  
+
+
+# OBJETIVO:
+- Mediante una GUI controlar luces led a través de una aplicación de arduino para dar mensajes de una forma original. 
 
 #ROLES SCRUM DE LOS INTEGRANTES#
 
@@ -37,7 +38,7 @@ Principalmente su rol dentro del team estará enfocado en la programación del c
 
 ***
 
-#DESCRIPCIÓN DE LA APLICACIÓN#
+#DESCRIPCIÓN DEL PROYECTO#
 
 Se trata de una matriz de LED's con dimensiones de 7x5 controlada por una aplicación mediante el uso del arduino MEGA, donde se podrá utilizar bajo dos modos de operación:
  
@@ -60,18 +61,39 @@ En cuanto al código de la programación, cabe mencionar que se está desarrolla
 
  ![](Arduino.png) 
 
-- ***Tira de Leds de 60***
+- ***Tira de Leds de 60 WS2812B***
 
 ![](TiraDeLeds.png)
 
+- ***Batería PowerBand***
+
+![](POWERBAND.png)
+
+- ***Capacitores de 47 microfaradios y 2 resistencias (una de 22 y otra de 100k)***
+
+![](circuito.png)
+
 ***
 
-#DESCRIPCIONES DE LOS AVANCES:#
+#DESARROLLO Y DETALLES DEL PROYECTO:#
 1. ***Primero a través de un plano se procedió a adecuar la ubicacion de los leds en el futuro letrero como se muestra a continuación:***
 
 ![](plano.png)
 
-2._ ***Al inicio de la ejecucion se muestra un gif de tamaño 560x560 con barra de carga hasta esperar que detecte al arduino,lo que le permitirá al usuario poder visualizar el estado del sistema, como se muestra a continuación:***
+2._ ***Se procedió a programar el código de la aplicacion en el entorno de Proccesing***
+
+3._ ***Se construyó un circuito el cual ayuda a la bateria power Band a mantener encendida toda la tira de los 37 leds***
+
+![](circuito.png)
+
+3._ ***Finalmente se realizó la confección de los cobertores para la Mini-maqueta del Letrero en dos modos: Modo Blinks y Modo Sings***
+
+![](LETREROBLINKS.png)
+
+
+![](MODOSINGS.png)
+
+5._ ***Al inicio de la ejecucion se muestra un gif de tamaño 560x560 con barra de carga hasta esperar que detecte al arduino,lo que le permitirá al usuario poder visualizar el estado del sistema, como se muestra a continuación:***
 
 ![](imagengif.png)
 
@@ -94,3 +116,19 @@ En cuanto al código de la programación, cabe mencionar que se está desarrolla
 10._ ***El boton de Simular abrirá una nueva ventana en donde se simulará el final que por el momento no esta configurado***
 
 ![](ventanaSimular.png)
+#RESULTADO:#
+
+- Aqui presentamos el funcionamiento del modo sings, en donde el mensaje se muestra letra por letra y en forma de letrero ocupando toda la capacidad de la matriz.
+
+![](LETRA-A-.png)
+
+- A continuación se muestra el funcionamieto del modo blinks en donde el mensaje aparecerá letra por letra y en el letrero estará conformado por todo el abecedario
+
+![](MENSAJE.png)
+ 
+#CONCLUSIÓN:#
+- Mediante la aplicación  de los conocimientos en las materias de: Electronica básica, Interación Hombre- Máquina y Programación, hemos podido llevar a cabo el proyecto que consiste en mostrar letras y  mensajes de una manera original a través de la aplicación Stranger Blkins cntrolada por Arduino. 
+
+#RECOMENDACIÓN#
+
+- Es necesario que al momento de desarrollar un proyecto de GUI, se tengan conocimientos de los principios de usabilidad. 
