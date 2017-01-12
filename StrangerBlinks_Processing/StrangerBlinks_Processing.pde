@@ -70,8 +70,9 @@ void draw() {
   background(fondo);
   Botones();
   if(cambios!=Modos&& mensaje!=null){
-      clearGraphic();
-      updateGraphic(mensaje[d],col[charCol[d]]);
+     
+      if(Modos==false)  clearGraphic();else  clearGraphic2();
+      if(Modos==false) updateGraphic(mensaje[d],col[charCol[d]]);else updateGraphic2(mensaje[d],col[charCol[d]]); 
       cambios=Modos;
   }
   
@@ -84,6 +85,9 @@ void draw() {
    }
    
  }
+ 
+ if(Modos){spad2.setVisible(true);spad.setVisible(false);}
+ else{spad.setVisible(true);spad2.setVisible(false);}
 
  //  println("mmm "+ A[2]);
     
@@ -100,8 +104,8 @@ GToggleGroup configuracion;
 GOption      general,individual;
 GCustomSlider velocidad;
 int opcionConf=0;
-PGraphics pg,pg_simu;
-GSketchPad spad,spad_simu;
+PGraphics pg,pg2,pg_simu,pg_simu2;
+GSketchPad spad,spad2,spad_simu,spad_simu2;
 GLabel label;
 GToggleGroup tg;
 
@@ -192,7 +196,15 @@ void Botones(){
    pg = createGraphics(200, 160, JAVA2D);    
    spad = new GSketchPad(this, 190, 230, 150, 150);
       spad.setGraphic(pg);
+      
       clearGraphic();
+      
+       pg2 = createGraphics(300, 180, JAVA2D);    
+      spad2 = new GSketchPad(this, 165, 240, 200,200);
+      spad2.setGraphic(pg2);
+      clearGraphic2();
+      
+      
       
       
       b_anterior = new GButton(this,200,385,50,30,"<<");
@@ -211,7 +223,7 @@ void Botones(){
    if(mensaje!=null){  
    if(d==0)  b_anterior.setLocalColorScheme(0); else b_anterior.setLocalColorScheme(5);
    if(d==mensaje.length-1) b_siguiente.setLocalColorScheme(0); else  b_siguiente.setLocalColorScheme(5);
-   }else b_siguiente.setLocalColorScheme(0);
+   }else {b_siguiente.setLocalColorScheme(0); b_anterior.setLocalColorScheme(0);}
    
    //señal de colores 
    fill(222,222,222);
@@ -230,7 +242,7 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
 
  public void handleButtonEvents(GButton button, GEvent event) {
    if(button==b_simular &&event == GEvent.CLICKED && mensaje!=null)Simulacion();
-    if(button==b_setear &&event == GEvent.CLICKED) {texto.setText("");d=0; mensaje=null; charCol=null;clearGraphic();}
+    if(button==b_setear &&event == GEvent.CLICKED) {texto.setText("");d=0; mensaje=null; charCol=null;if(Modos==false)  clearGraphic();else  clearGraphic2();}
     
     //convierte en char el texto puesto en texto
     if(button==b_procesar &&event == GEvent.CLICKED &&texto.getText()!= " " ){
@@ -239,8 +251,8 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
               //creo todo con el color por defecto
               
               matriz_defecto(mensaje);
-              clearGraphic();
-              updateGraphic(mensaje[d],col[charCol[d]]);
+              if(Modos==false)  clearGraphic();else  clearGraphic2();
+              if(Modos==false) updateGraphic(mensaje[d],col[charCol[d]]);else updateGraphic2(mensaje[d],col[charCol[d]]); 
               general.setSelected(true);
              
              // println("tamano"+texto.getText()+"dfd");
@@ -253,8 +265,8 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
         if(d<mensaje.length-1){
               
            d++;
-           clearGraphic();
-           updateGraphic(mensaje[d],col[charCol[d]]);
+           if(Modos==false)  clearGraphic();else  clearGraphic2();
+           if(Modos==false) updateGraphic(mensaje[d],col[charCol[d]]);else updateGraphic2(mensaje[d],col[charCol[d]]); 
           
          }
         
@@ -263,8 +275,8 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
          if(d>0){
            
               d--;
-              clearGraphic();
-              updateGraphic(mensaje[d],col[charCol[d]]);
+              if(Modos==false)  clearGraphic();else  clearGraphic2();
+              if(Modos==false) updateGraphic(mensaje[d],col[charCol[d]]);else updateGraphic2(mensaje[d],col[charCol[d]]); 
              
            
          }
@@ -278,13 +290,13 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
                if(general.isSelected()==true)
                {
                matriz_defecto(mensaje);
-               clearGraphic();
-               updateGraphic(mensaje[d],col[charCol[d]]);
+               if(Modos==false)  clearGraphic();else  clearGraphic2();
+               if(Modos==false) updateGraphic(mensaje[d],col[charCol[d]]);else updateGraphic2(mensaje[d],col[charCol[d]]); 
                }else
                {
                   charCol[d]=colores;
-                  clearGraphic();
-                  updateGraphic(mensaje[d],col[charCol[d]]);
+                  if(Modos==false)  clearGraphic();else  clearGraphic2();
+                  if(Modos==false) updateGraphic(mensaje[d],col[charCol[d]]);else updateGraphic2(mensaje[d],col[charCol[d]]); 
                }
                
            }
@@ -364,6 +376,10 @@ GButton b_setear,b_procesar,b_simular,b_ejecutar,b_siguiente,b_anterior;
        pg_simu = createGraphics(200, 160, JAVA2D);    
        spad_simu = new GSketchPad(simulacion, 300, 10, 250, 300);
        spad_simu.setGraphic(pg_simu);
+       
+       pg_simu2 = createGraphics(300, 125, JAVA2D);    
+       spad_simu2 = new GSketchPad(simulacion, 200, 20, 350, 280);
+       spad_simu2.setGraphic(pg_simu2);
 
        s_pausa = new GButton(simulacion, 445,315,100,50,"PAUSAR");
        s_pausa.tag = "b_anterior";
@@ -391,7 +407,7 @@ boolean ensimu=true, modo;
      if(tiempo>tiempo_act+espera && e<mensaje.length&&ensimu==true){
        borrar_simu();
        
-       letra_simu(mensaje[e],col[charCol[e]]);
+       if(modo==true)letra_simu2(mensaje[e],col[charCol[e]]);else letra_simu(mensaje[e],col[charCol[e]]);
         e++;
        tiempo_act=tiempo;
       
@@ -402,10 +418,60 @@ boolean ensimu=true, modo;
         
     
 }  
+public void letra_simu2(char c,color co){
+  pg_simu2.beginDraw();
+   char[] chk = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','Ñ','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'};
+     int jk=0;
+    for(int i=0;i<5;i++){
+    for(int j=0;j<8;j++){
+      
+       int g=0;
+      for( g=0;g<37&&chk[g]!=c;g++);
+      
+       int v=i*8+j;
+       if(v!=7&&v!=23&&v!=39){
+          if(g>6)g++;
+          if(g>22)g++;
+         
+      if(g==v&&c!=' '){ 
+        
+       
+       
+        pg_simu2.fill(co); 
+      //pg.rect(20+35*j,6+22*i,20,18);
+      //  pg.fill(0);
+        //PFont po =loadFont("Arial-Black-18");
+       pg_simu2.textFont(createFont("Georgia", 30) );
+       pg_simu2.text(""+c,20+35*j,25+22*i);
+       
+       
+       jk++;
+      }
+       else {
+       
+        
+          
+         if(c==' ')pg_simu2.fill(co);else pg_simu2.fill(0);
+         pg_simu2.textFont(createFont("Georgia", 28) );
+         pg_simu2.text(chk[jk],20+35*j,25+22*i);
+        
+         jk++;
+       
+        
+       }
+       }
+      
+      
+    }
+    }
+     pg_simu2.endDraw();
+  
+}
 
 public void letra_simu(char c,color co){
   pg_simu.beginDraw();
-  if (modo==false){
+  
+   
   for(int i=0;i<7;i++){
     for(int j=0;j<5;j++){
       int [][] cc = Letras(c);
@@ -416,7 +482,8 @@ public void letra_simu(char c,color co){
         pg_simu.rect(20+35*j,6+22*i,20,18);
     
     }
-  }}else{
+  }
+/*
     char[] chk = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','ñ','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
      int jk=0;
     for(int i=0;i<7;i++){
@@ -449,23 +516,30 @@ public void letra_simu(char c,color co){
         
        }
        
+      */
       
-      
-    }
     
-   }
+    
+   
     
   
-}
+
    pg_simu.endDraw();
 }
  public void borrar_simu(){
-   
+   if(modo==false){
     pg_simu.beginDraw();
      pg_simu.background(225,170,80,150);
      pg_simu.noFill();
     pg_simu.ellipseMode(CORNERS);
-    pg_simu.endDraw();
+    pg_simu.endDraw();}
+    else{
+      pg_simu2.beginDraw();
+     pg_simu2.background(225,170,80,150);
+     pg_simu2.noFill();
+    pg_simu2.ellipseMode(CORNERS);
+    pg_simu2.endDraw();}
+    
    
  }
  
@@ -476,7 +550,7 @@ public void letra_simu(char c,color co){
 
   pg.beginDraw();
  
-  if(Modos==false){
+  
   for(int i=0;i<7;i++){
     for(int j=0;j<5;j++){
       int [][] cc = Letras(c);
@@ -487,56 +561,82 @@ public void letra_simu(char c,color co){
     
     }
    }
-  }else{
-    char[] chk = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','ñ','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+  
+     
+   
+    pg.endDraw();
+}
+
+void updateGraphic2(char c,color co){
+  
+ 
+    pg2.beginDraw();
+   char[] chk = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','Ñ','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'};
      int jk=0;
-    for(int i=0;i<7;i++){
-    for(int j=0;j<5;j++){
-      int   cc = Letra_blinks(c);
-       int v=i*5+j;
-      if(cc==v&&c!=' '){ 
-         pg.fill(co); 
+    for(int i=0;i<5;i++){
+    for(int j=0;j<8;j++){
+      
+       int g=0;
+      for( g=0;g<37&&chk[g]!=c;g++);
+      
+       int v=i*8+j;
+       if(v!=7&&v!=23&&v!=39){
+          if(g>6)g++;
+          if(g>22)g++;
+         
+      if(g==v&&c!=' '){ 
+        
+       
+       
+        pg2.fill(co); 
       //pg.rect(20+35*j,6+22*i,20,18);
       //  pg.fill(0);
         //PFont po =loadFont("Arial-Black-18");
-       pg.textFont(createFont("Georgia", 30) );
-       pg.text(""+c,20+35*j,25+22*i);
+       pg2.textFont(createFont("Georgia", 30) );
+       pg2.text(""+c,20+35*j,25+22*i);
+       
+       
        jk++;
-       
-        
-       
-      
       }
        else {
        
-        if(v!=0&&v!=4&&v!=15&&v!=19&&v!=30&&v!=31&&v!=33&&v!=34){
+        
           
-         if(c==' ')pg.fill(co);else pg.fill(0);
-         pg.textFont(createFont("Georgia", 28) );
-         pg.text(chk[jk],20+35*j,25+22*i);
+         if(c==' ')pg2.fill(co);else pg2.fill(0);
+         pg2.textFont(createFont("Georgia", 28) );
+         pg2.text(chk[jk],20+35*j,25+22*i);
+        
          jk++;
-       }
+       
         
        }
-       
+       }
       
       
     }
-    
-   }
-     
-  } 
-    pg.endDraw();
+    }
+     pg2.endDraw();
 }
- 
+
+ void clearGraphic2() {
+   
+  pg2.beginDraw();
+  pg2.background(255,0);
+  pg2.noFill();
+  pg2.ellipseMode(CORNERS);
+  pg2.endDraw();
+}
+
  
  
  void clearGraphic() {
+   /*  */
   pg.beginDraw();
   pg.background(255,0);
   pg.noFill();
   pg.ellipseMode(CORNERS);
   pg.endDraw();
+
 }
 
  
@@ -568,7 +668,7 @@ public void letra_simu(char c,color co){
 
 
 
-void mousePressed(){
+void mousePressed(){ 
   
   /*println(mouseX);
   println(mouseY);
